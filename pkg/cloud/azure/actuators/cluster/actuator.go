@@ -24,11 +24,25 @@ import (
 	"github.com/platform9/cluster-api-provider-azure/pkg/cloud/azure/services"
 	"github.com/platform9/cluster-api-provider-azure/pkg/cloud/azure/services/network"
 	"github.com/platform9/cluster-api-provider-azure/pkg/cloud/azure/services/resourcemanagement"
+	"github.com/platform9/azure-provider/pkg/deployer"
 	clusterv1 "sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-type AzureClusterClient struct {
+// Actuator is responsible for performing cluster reconciliation
+type Actuator struct {
+	*deployer.Deployer
+
+	client client.ClusterV1alpha1Interface
+}
+
+// ActuatorParams holds parameter information for Actuator
+type ActuatorParams struct {
+	Client client.ClusterV1alpha1Interface
+}
+
+/*
+ type AzureClusterClient struct {
 	services *services.AzureClients
 	client   client.Client
 }
@@ -37,8 +51,11 @@ type ClusterActuatorParams struct {
 	Services *services.AzureClients
 	Client   client.Client
 }
+ */
 
-func NewClusterActuator(params ClusterActuatorParams) (*AzureClusterClient, error) {
+// NewActuator creates a new Actuator
+func NewActuator(params ActuatorParams) *Actuator {
+/*
 	azureServicesClients, err := azureServicesClientOrDefault(params)
 	if err != nil {
 		return nil, err
@@ -48,6 +65,12 @@ func NewClusterActuator(params ClusterActuatorParams) (*AzureClusterClient, erro
 		services: azureServicesClients,
 		client:   params.Client,
 	}, nil
+*/
+	return &Actuator{
+		Deployer: deployer.New(deployer.Params{ScopeGetter: actuators.DefaultScopeGetter}),
+		client:   params.Client,
+	}
+
 }
 
 func (azure *AzureClusterClient) Reconcile(cluster *clusterv1.Cluster) error {
